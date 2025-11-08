@@ -1,8 +1,6 @@
 #version 330 core
-
 in vec2 UV;
-out vec4 color;  // CHANGED
-
+out vec4 color;                // ← change to vec4
 uniform sampler2D textureSampler;
 uniform int filterMode;
 uniform int pixelSize;
@@ -43,18 +41,18 @@ void main() {
     vec2 transformedUV = applyTransformation(UV);
     if (transformedUV.x < 0.0 || transformedUV.x > 1.0 ||
         transformedUV.y < 0.0 || transformedUV.y > 1.0) {
-        color = vec4(0.1, 0.1, 0.2, 1.0);
+        color = vec4(0.1, 0.1, 0.2, 1.0);   // ← add alpha
         return;
     }
 
     vec3 texColor;
-    if (filterMode == 1) {
+    if (filterMode == 1)
         texColor = applyPixelation(transformedUV, pixelSize);
-    } else {
+    else {
         texColor = texture(textureSampler, transformedUV).rgb;
         if (filterMode == 2)
             texColor = applyGrayscale(texColor);
     }
 
-    color = vec4(texColor, 1.0);
+    color = vec4(texColor, 1.0);            // ← output vec4
 }

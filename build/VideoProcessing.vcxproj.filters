@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\TextureShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\common\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\madsm\AU_Repos\Visual_Computing\A2\A2_Visual_Computing-2\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3E2CC0BF-B4AC-3CD9-BC4A-0E474C75B731}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

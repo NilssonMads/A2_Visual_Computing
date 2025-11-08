@@ -196,7 +196,7 @@ int main(void) {
 
             // --- FIXED COLOR ORDER ---
             // Always convert BGR → RGB before sending to OpenGL
-            //cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
+            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
             cv::flip(processedFrame, processedFrame, 0);
 
             // Update texture
@@ -348,7 +348,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
             int width, height;
             glfwGetWindowSize(window, &width, &height);
             appState.translation.x += delta.x / width * 2.0f;
-            appState.translation.y -= delta.y / height * 2.0f;
+            appState.translation.y += delta.y / height * 2.0f;
         }
         
         appState.lastMousePos = currentPos;

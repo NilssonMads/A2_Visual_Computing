@@ -1,5 +1,0 @@
-C:/Users/madsm/source/repos/visual_computing_nilsson/A2/Example/OpenGLIntro/out/build/x64-Debug/CMakeFiles/Part01.dir
-C:/Users/madsm/source/repos/visual_computing_nilsson/A2/Example/OpenGLIntro/out/build/x64-Debug/CMakeFiles/Part02.dir
-C:/Users/madsm/source/repos/visual_computing_nilsson/A2/Example/OpenGLIntro/out/build/x64-Debug/CMakeFiles/Part03.dir
-C:/Users/madsm/source/repos/visual_computing_nilsson/A2/Example/OpenGLIntro/out/build/x64-Debug/CMakeFiles/edit_cache.dir
-C:/Users/madsm/source/repos/visual_computing_nilsson/A2/Example/OpenGLIntro/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
