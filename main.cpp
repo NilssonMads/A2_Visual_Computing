@@ -188,7 +188,7 @@ int main(void) {
                     
                     // Add translation
                     transform.at<double>(0, 2) += appState.translation.x * processedFrame.cols / 2.0f;
-                    transform.at<double>(1, 2) += appState.translation.y * processedFrame.rows / 2.0f;
+                    transform.at<double>(1, 2) -= appState.translation.y * processedFrame.rows / 2.0f;
                     
                     cv::warpAffine(processedFrame, processedFrame, transform, processedFrame.size());
                 }
@@ -347,8 +347,8 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
             // Translation
             int width, height;
             glfwGetWindowSize(window, &width, &height);
-            appState.translation.x += delta.x / width * 2.0f;
-            appState.translation.y += delta.y / height * 2.0f;
+            appState.translation.x -= delta.x / width * 2.0f;
+            appState.translation.y -= delta.y / height * 2.0f;
         }
         
         appState.lastMousePos = currentPos;
