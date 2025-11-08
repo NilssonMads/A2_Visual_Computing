@@ -17,7 +17,6 @@
 #include <vector>
 
 #include <glad/glad.h>
-
 #include <GLFW/glfw3.h>
 GLFWwindow* window;
 
@@ -135,8 +134,8 @@ int main(void) {
     myScene->addObject(myQuad);
 
     // Create initial texture
+    
     cv::flip(frame, frame, 0);
-    cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB); // Convert BGR to RGB
     Texture* videoTexture = new Texture(frame.data, frame.cols, frame.rows, true);
     textureShader->setTexture(videoTexture);
 
@@ -194,9 +193,13 @@ int main(void) {
                     cv::warpAffine(processedFrame, processedFrame, transform, processedFrame.size());
                 }
             }
-            
-            // Update texture
+
+            // --- FIXED COLOR ORDER ---
+            // Always convert BGR → RGB before sending to OpenGL
+            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
             cv::flip(processedFrame, processedFrame, 0);
+
+            // Update texture
             videoTexture->update(processedFrame.data, processedFrame.cols, processedFrame.rows, true);
             
             // Set shader uniforms for GPU processing
