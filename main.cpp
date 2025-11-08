@@ -123,7 +123,7 @@ int main(void) {
     }
 
     // Create rendering objects
-    TextureShader* textureShader = new TextureShader("videoTextureShader.vert", "videoTextureShader.frag");
+    TextureShader* textureShader = new TextureShader("shaders/videoTextureShader.vert", "shaders/videoTextureShader.frag");
     Scene* myScene = new Scene();
     Camera* renderingCamera = new Camera();
     renderingCamera->setPosition(glm::vec3(0, 0, -2.5));
@@ -136,6 +136,7 @@ int main(void) {
 
     // Create initial texture
     cv::flip(frame, frame, 0);
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB); // Convert BGR to RGB
     Texture* videoTexture = new Texture(frame.data, frame.cols, frame.rows, true);
     textureShader->setTexture(videoTexture);
 
