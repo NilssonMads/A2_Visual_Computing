@@ -1,0 +1,3 @@
+C:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing/build/CMakeFiles/VideoProcessing.dir
+C:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing/build/CMakeFiles/ZERO_CHECK.dir

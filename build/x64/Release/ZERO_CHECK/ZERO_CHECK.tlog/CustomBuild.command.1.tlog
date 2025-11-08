@@ -1,0 +1,10 @@
+^C:\USERS\MADSM\AU_REPOS\VISUAL_COMPUTING\A2\A2_VISUAL_COMPUTING\BUILD\CMAKEFILES\EFCA7CFF089FBDF7528156D9C927133A\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing -BC:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/madsm/AU_Repos/Visual_Computing/A2/a2_visual_computing/build/VideoProcessing.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
