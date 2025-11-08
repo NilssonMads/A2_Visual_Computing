@@ -194,8 +194,7 @@ int main(void) {
                 }
             }
 
-            // --- FIXED COLOR ORDER ---
-            // Always convert BGR → RGB before sending to OpenGL
+            // Convert BGR to RGB before sending to OpenGL
             cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
             cv::flip(processedFrame, processedFrame, 0);
 
