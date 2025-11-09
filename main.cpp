@@ -187,9 +187,9 @@ int main(void) {
                     cv::Point2f center(processedFrame.cols / 2.0f, processedFrame.rows / 2.0f);
                     cv::Mat transform = cv::getRotationMatrix2D(center, appState.rotation, appState.scale);
                     
-                    // Add translation
-                    transform.at<double>(0, 2) += appState.translation.x * processedFrame.cols / 2.0f;
-                    transform.at<double>(1, 2) -= appState.translation.y * processedFrame.rows / 2.0f;
+                    // Add translation (negated to match GPU shader behavior)
+                    transform.at<double>(0, 2) -= appState.translation.x * processedFrame.cols / 2.0f;
+                    transform.at<double>(1, 2) += appState.translation.y * processedFrame.rows / 2.0f;
                     
                     cv::warpAffine(processedFrame, processedFrame, transform, processedFrame.size());
                 }
@@ -197,34 +197,23 @@ int main(void) {
             
             // Update texture
             cv::flip(processedFrame, processedFrame, 0);
-            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB); // Convert BGR to RGB
+            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
             videoTexture->update(processedFrame.data, processedFrame.cols, processedFrame.rows, true);
             
-            // Set shader uniforms for GPU processing
+            // Set shader uniforms
+            textureShader->use();
+            
             if (appState.processingMode == GPU_MODE) {
-                textureShader->use();
-                
-                // Filter parameters
+                // GPU mode: apply filters and transformations in shader
                 textureShader->setInt("filterMode", (int)appState.currentFilter);
                 textureShader->setInt("pixelSize", 10);
-                
-                // Transformation parameters
                 textureShader->setFloat("uTranslateX", appState.translation.x);
                 textureShader->setFloat("uTranslateY", appState.translation.y);
                 textureShader->setFloat("uRotation", glm::radians(appState.rotation));
                 textureShader->setFloat("uScale", appState.scale);
             } else {
-                // In CPU mode, reset GPU transformations to identity
-                textureShader->use();
-                textureShader->setInt("filterMode", 0); // No GPU filter
-                textureShader->setFloat("uTranslateX", 0.0f);
-                textureShader->setFloat("uTranslateY", 0.0f);
-                textureShader->setFloat("uRotation", 0.0f);
-                textureShader->setFloat("uScale", 1.0f);
-            } else {
-                // In CPU mode, reset GPU transformations to identity
-                textureShader->use();
-                textureShader->setInt("filterMode", 0); // No GPU filter
+                // CPU mode: reset GPU transformations to identity
+                textureShader->setInt("filterMode", 0);
                 textureShader->setFloat("uTranslateX", 0.0f);
                 textureShader->setFloat("uTranslateY", 0.0f);
                 textureShader->setFloat("uRotation", 0.0f);
