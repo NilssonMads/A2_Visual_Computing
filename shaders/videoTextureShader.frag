@@ -34,7 +34,7 @@ vec2 applyTransformation(vec2 uv) {
     
     // Apply translation (inverted to match expected behavior)
     rotated.x += uTranslateX;
-    rotated.y += uTranslateY;
+    rotated.y -= uTranslateY;
     
     // Move back to [0,1] range
     return rotated + 0.5;
