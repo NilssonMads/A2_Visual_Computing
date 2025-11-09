@@ -17,6 +17,7 @@
 #include <vector>
 
 #include <glad/glad.h>
+
 #include <GLFW/glfw3.h>
 GLFWwindow* window;
 
@@ -134,8 +135,8 @@ int main(void) {
     myScene->addObject(myQuad);
 
     // Create initial texture
-    
     cv::flip(frame, frame, 0);
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB); // Convert BGR to RGB
     Texture* videoTexture = new Texture(frame.data, frame.cols, frame.rows, true);
     textureShader->setTexture(videoTexture);
 
@@ -193,12 +194,10 @@ int main(void) {
                     cv::warpAffine(processedFrame, processedFrame, transform, processedFrame.size());
                 }
             }
-
-            // Convert BGR to RGB before sending to OpenGL
-            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB);
-            cv::flip(processedFrame, processedFrame, 0);
-
+            
             // Update texture
+            cv::flip(processedFrame, processedFrame, 0);
+            cv::cvtColor(processedFrame, processedFrame, cv::COLOR_BGR2RGB); // Convert BGR to RGB
             videoTexture->update(processedFrame.data, processedFrame.cols, processedFrame.rows, true);
             
             // Set shader uniforms for GPU processing
@@ -214,6 +213,22 @@ int main(void) {
                 textureShader->setFloat("uTranslateY", appState.translation.y);
                 textureShader->setFloat("uRotation", glm::radians(appState.rotation));
                 textureShader->setFloat("uScale", appState.scale);
+            } else {
+                // In CPU mode, reset GPU transformations to identity
+                textureShader->use();
+                textureShader->setInt("filterMode", 0); // No GPU filter
+                textureShader->setFloat("uTranslateX", 0.0f);
+                textureShader->setFloat("uTranslateY", 0.0f);
+                textureShader->setFloat("uRotation", 0.0f);
+                textureShader->setFloat("uScale", 1.0f);
+            } else {
+                // In CPU mode, reset GPU transformations to identity
+                textureShader->use();
+                textureShader->setInt("filterMode", 0); // No GPU filter
+                textureShader->setFloat("uTranslateX", 0.0f);
+                textureShader->setFloat("uTranslateY", 0.0f);
+                textureShader->setFloat("uRotation", 0.0f);
+                textureShader->setFloat("uScale", 1.0f);
             }
         }
 
@@ -346,7 +361,7 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
             // Translation
             int width, height;
             glfwGetWindowSize(window, &width, &height);
-            appState.translation.x -= delta.x / width * 2.0f;
+            appState.translation.x += delta.x / width * 2.0f;
             appState.translation.y -= delta.y / height * 2.0f;
         }
         
