@@ -7,6 +7,7 @@
  * - Interactive geometric transformations (translate, rotate, scale)
  * - Runtime switching between filters and processing modes
  * - Performance measurement for experimental analysis
+ * - 60-second average FPS logging
  */
 
 #include <stdio.h>
@@ -18,11 +19,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-GLFWwindow* window;
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
+
 
 #include <opencv2/opencv.hpp>
 
@@ -35,6 +35,8 @@ using namespace glm;
 #include <common/Texture.hpp>
 
 using namespace std;
+using namespace glm;
+GLFWwindow* window;
 
 // --- Global state for interaction ---
 enum FilterMode { FILTER_NONE, FILTER_PIXELATE, FILTER_GRAYSCALE };
@@ -53,6 +55,17 @@ struct AppState {
 
     std::vector<double> frameTimes;
     int frameCount = 0;
+    
+    // For 60-second average FPS logging
+    std::vector<double> allFrameTimes;
+    bool logged60SecAverage = false;
+    std::chrono::high_resolution_clock::time_point startTime;
+    
+    void resetFPSTracking() {
+        allFrameTimes.clear();
+        logged60SecAverage = false;
+        startTime = std::chrono::high_resolution_clock::now();
+    }
 };
 
 AppState appState;
@@ -144,6 +157,7 @@ int main(void) {
     cout << "ESC: Exit\n" << endl;
 
     auto lastTime = std::chrono::high_resolution_clock::now();
+    appState.startTime = std::chrono::high_resolution_clock::now();
 
     // --- Step 4: Main Render Loop ---
     while (!glfwWindowShouldClose(window)) {
@@ -205,7 +219,35 @@ int main(void) {
         auto frameEnd = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> frameDuration = frameEnd - frameStart;
         appState.frameTimes.push_back(frameDuration.count());
+        appState.allFrameTimes.push_back(frameDuration.count());
         appState.frameCount++;
+
+        // Check if 60 seconds have elapsed for average FPS logging
+        std::chrono::duration<double> elapsedTotal = frameEnd - appState.startTime;
+        if (!appState.logged60SecAverage && elapsedTotal.count() >= 60.0) {
+            double totalFrameTime = 0;
+            for (double t : appState.allFrameTimes) totalFrameTime += t;
+            double avgFrameTime = totalFrameTime / appState.allFrameTimes.size();
+            double avgFPS = 1000.0 / avgFrameTime;
+            
+            cout << "\n========================================" << endl;
+            cout << "60-SECOND AVERAGE FPS REPORT" << endl;
+            cout << "========================================" << endl;
+            cout << "Mode: " << (appState.processingMode == GPU_MODE ? "GPU" : "CPU") << endl;
+            cout << "Filter: ";
+            switch (appState.currentFilter) {
+                case FILTER_NONE: cout << "None"; break;
+                case FILTER_PIXELATE: cout << "Pixelate"; break;
+                case FILTER_GRAYSCALE: cout << "Grayscale"; break;
+            }
+            cout << endl;
+            cout << "Average FPS: " << avgFPS << endl;
+            cout << "Average Frame Time: " << avgFrameTime << " ms" << endl;
+            cout << "Total Frames: " << appState.allFrameTimes.size() << endl;
+            cout << "========================================\n" << endl;
+            
+            appState.logged60SecAverage = true;
+        }
 
         auto currentTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = currentTime - lastTime;
@@ -222,6 +264,10 @@ int main(void) {
                 case FILTER_NONE: cout << "None"; break;
                 case FILTER_PIXELATE: cout << "Pixelate"; break;
                 case FILTER_GRAYSCALE: cout << "Grayscale"; break;
+            }
+            cout << " | Elapsed: " << (int)elapsedTotal.count() << "s";
+            if (!appState.logged60SecAverage) {
+                cout << " (60s report in " << (60 - (int)elapsedTotal.count()) << "s)";
             }
             cout << endl;
 
@@ -263,13 +309,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (action == GLFW_PRESS) {
         switch (key) {
             case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
-            case GLFW_KEY_1: appState.currentFilter = FILTER_NONE; cout << "Filter: None\n"; break;
-            case GLFW_KEY_2: appState.currentFilter = FILTER_PIXELATE; cout << "Filter: Pixelation\n"; break;
-            case GLFW_KEY_3: appState.currentFilter = FILTER_GRAYSCALE; cout << "Filter: Grayscale\n"; break;
+            case GLFW_KEY_1: 
+                appState.currentFilter = FILTER_NONE; 
+                appState.resetFPSTracking();
+                cout << "Filter: None (FPS tracking reset)\n"; 
+                break;
+            case GLFW_KEY_2: 
+                appState.currentFilter = FILTER_PIXELATE; 
+                appState.resetFPSTracking();
+                cout << "Filter: Pixelation (FPS tracking reset)\n"; 
+                break;
+            case GLFW_KEY_3: 
+                appState.currentFilter = FILTER_GRAYSCALE; 
+                appState.resetFPSTracking();
+                cout << "Filter: Grayscale (FPS tracking reset)\n"; 
+                break;
             case GLFW_KEY_C:
                 appState.processingMode =
                     (appState.processingMode == GPU_MODE) ? CPU_MODE : GPU_MODE;
-                cout << "Mode: " << (appState.processingMode == GPU_MODE ? "GPU" : "CPU") << endl;
+                appState.resetFPSTracking();
+                cout << "Mode: " << (appState.processingMode == GPU_MODE ? "GPU" : "CPU") 
+                     << " (FPS tracking reset)" << endl;
                 break;
             case GLFW_KEY_SPACE:
                 appState.translation = glm::vec2(0.0f);
