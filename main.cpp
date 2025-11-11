@@ -87,7 +87,7 @@ int main(void) {
         cerr << "Error: Could not open camera. Exiting." << endl;
         return -1;
     }
-
+    // --- Set camera resolution ---
     cap.set(cv::CAP_PROP_FRAME_WIDTH, 1280);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 720);
     cout << "Camera opened successfully." << endl;
